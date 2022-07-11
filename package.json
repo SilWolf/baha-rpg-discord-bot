@@ -1,7 +1,7 @@
 {
   "name": "baha-rpg-discord-bot",
   "scripts": {
-    "dev": "nodemon --watch ./src yarn build && yarn start",
+    "dev": "nodemon --watch ./src --exec \"yarn build && yarn start\"",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "start": "node dist/index.js",
     "lint": "eslint ./src --fix"
@@ -9,9 +9,11 @@
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
     "@discordjs/rest": "^0.5.0",
+    "axios": "^0.27.2",
     "discord-api-types": "^0.36.1",
     "discord.js": "^13.8.1",
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.1",
+    "node-fetch": "^3.2.6"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.30.5",
