@@ -15,6 +15,13 @@ export type PostRawGuild = {
   pic: string
 }
 
+export type PostRawUrlPreview = {
+  urlTitle: string
+  urlImage: string
+  urlLink: string
+  urlDesc: string
+}
+
 export type PostRaw = {
   type: string
   service: number
@@ -34,7 +41,7 @@ export type PostRaw = {
   canCheckIn: boolean
   images: string[]
   imageType: string
-  urlPreview: string
+  urlPreview?: PostRawUrlPreview | Array<unknown>
   tags: string[]
   mentions: string[]
   markFrom: string[]
@@ -54,4 +61,9 @@ export type PostRaw = {
   contentImages: string[]
 }
 
-export type Post = Pick<PostRaw, 'id' | 'publisher' | 'content' | 'ctime'>
+export type Post = Pick<
+  PostRaw,
+  'id' | 'publisher' | 'content' | 'ctime' | 'to'
+> & {
+  urlPreview?: PostRawUrlPreview
+}

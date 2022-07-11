@@ -1,43 +1,52 @@
 import { Post, PostRaw } from '@/types/baha/post.type'
 import api, { BahaAPIResponse } from '.'
 
-let cachedLastSn: string | undefined
+let cachedlastPostId: string | undefined
 
-export const getPosts = (lastSn?: string): Promise<Post[]> =>
+export const getPosts = (lastPostId?: string): Promise<Post[]> =>
   api
     .get<BahaAPIResponse<{ lastSn: string; postList: PostRaw[][] }>>(
       '/guild/v1/post_list.php'
     )
     .then((res) => {
-      if (!res.data.data?.lastSn) {
+      if (!res.data.data) {
         return []
       }
 
-      if (res.data.data?.lastSn === lastSn) {
+      const rawPosts = res.data.data.postList ?? []
+      if (rawPosts.length === 0) {
         return []
       }
 
-      const posts = (
-        res.data.data?.postList?.map((postList: PostRaw[]) => {
-          const post = postList[0]
-          if (!post) {
-            return undefined
+      const posts = []
+
+      for (let i = 0; i < rawPosts.length; i += 1) {
+        const rawPost = rawPosts[i][0]
+        if (rawPost) {
+          if (lastPostId === rawPost?.id) {
+            break
           }
 
-          return {
-            id: post.id,
-            publisher: post.publisher,
-            content: post.content,
-            ctime: post.ctime,
-          } as Post
-        }) ?? []
-      ).filter((post: Post | undefined) => !!post) as Post[]
+          posts.push({
+            id: rawPost.id,
+            publisher: rawPost.publisher,
+            content: rawPost.content,
+            ctime: rawPost.ctime,
+            to: rawPost.to,
+            urlPreview: Array.isArray(rawPost.urlPreview)
+              ? undefined
+              : rawPost.urlPreview,
+          })
+        }
+      }
 
-      cachedLastSn = res.data.data?.lastSn
+      if (posts.length > 0) {
+        cachedlastPostId = posts[0].id
+      }
 
       return posts
     })
 
-export const getNewPosts = (): Promise<Post[]> => getPosts(cachedLastSn)
+export const getNewPosts = (): Promise<Post[]> => getPosts(cachedlastPostId)
 
 export default {}
