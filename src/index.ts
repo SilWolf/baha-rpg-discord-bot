@@ -3,18 +3,18 @@ import { Client, Intents } from 'discord.js'
 
 import commands, { registerGlobalCommands } from '@/discord/commands'
 import guildCommands, { registerGuildCommands } from '@/discord/guildCommands'
-import { getPosts } from '@/baha/post.api'
+import { getNewPosts, getPosts } from '@/baha/post.api'
+
+import schedule from 'node-schedule'
 
 const allCommands = [...commands, ...guildCommands]
 
 const main = async () => {
-  // eslint-disable-next-line prefer-destructuring
   const token = process.env.token
   if (!token) {
     throw new Error('Missing env: token')
   }
 
-  // eslint-disable-next-line prefer-destructuring
   const appId = process.env.appId
   if (!appId) {
     throw new Error('Missing env: appId')
@@ -50,14 +50,25 @@ const main = async () => {
     }
   })
 
-  // Login to Discord with your client's token
   client.login(token)
+
+  // Start the scheduler
+  const job = schedule.scheduleJob(
+    '1,6,11,16,21,26,31,36,41,46,51,56 * * * *',
+    async () => {
+      const posts = await getNewPosts()
+
+      if (posts.length === 0) {
+        return
+      }
+
+      client.channels.cache.forEach((c) => {
+        if (c.isText()) {
+          c.send('Testing Message').catch(console.error)
+        }
+      })
+    }
+  )
 }
 
-const testForApi = async () => {
-  const posts = await getPosts()
-
-  console.log(posts)
-}
-
-export default testForApi()
+export default main()

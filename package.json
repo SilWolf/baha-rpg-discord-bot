@@ -13,9 +13,11 @@
     "discord-api-types": "^0.36.1",
     "discord.js": "^13.8.1",
     "dotenv": "^16.0.1",
-    "node-fetch": "^3.2.6"
+    "node-fetch": "^3.2.6",
+    "node-schedule": "^2.1.0"
   },
   "devDependencies": {
+    "@types/node-schedule": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^7.32.0 || ^8.2.0",
