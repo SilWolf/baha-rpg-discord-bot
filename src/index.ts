@@ -1,15 +1,13 @@
-import dotenv from 'dotenv'
-
+import 'dotenv/config'
 import { Client, Intents } from 'discord.js'
 
-import commands, { registerGlobalCommands } from './commands'
-import guildCommands, { registerGuildCommands } from './guildCommands'
+import commands, { registerGlobalCommands } from '@/discord/commands'
+import guildCommands, { registerGuildCommands } from '@/discord/guildCommands'
+import { getPosts } from '@/baha'
 
 const allCommands = [...commands, ...guildCommands]
 
 const main = async () => {
-  dotenv.config()
-
   // eslint-disable-next-line prefer-destructuring
   const token = process.env.token
   if (!token) {
@@ -56,4 +54,10 @@ const main = async () => {
   client.login(token)
 }
 
-export default main()
+const testForApi = async () => {
+  const posts = await getPosts()
+
+  console.log(posts)
+}
+
+export default testForApi()
