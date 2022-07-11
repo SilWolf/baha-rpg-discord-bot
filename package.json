@@ -1,9 +1,10 @@
 {
-  "name": "tsbot-example",
+  "name": "baha-rpg-discord-bot",
   "scripts": {
+    "dev": "nodemon --watch ./src yarn build && yarn start",
     "build": "tsc --project tsconfig.json",
     "start": "node dist/index.js",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src --fix"
   },
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
@@ -20,6 +21,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-import-resolver-typescript": "^3.2.5",
     "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.19",
     "prettier": "2.7.1",
     "typescript": "^4.7.4"
   }
