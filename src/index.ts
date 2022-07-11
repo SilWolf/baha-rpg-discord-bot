@@ -2,8 +2,8 @@ import dotenv from 'dotenv'
 
 import { Client, Intents } from 'discord.js'
 
-import commands, { registerGlobalCommands } from './commands'
-import guildCommands, { registerGuildCommands } from './guildCommands'
+import commands, { registerGlobalCommands } from '@/commands'
+import guildCommands, { registerGuildCommands } from '@/guildCommands'
 
 const allCommands = [...commands, ...guildCommands]
 

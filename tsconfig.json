@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"baseUrl": "./src",
 		"target": "es5",
 		"lib": ["es5"],
 		"module": "commonjs",
@@ -12,7 +13,7 @@
 		"skipLibCheck": true,
 		"removeComments": true,
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["*"]
 		}
 	},
 	"include": ["./src/**/*"]
