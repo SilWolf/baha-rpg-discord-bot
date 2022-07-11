@@ -1,7 +1,7 @@
 {
   "name": "baha-rpg-discord-bot",
   "scripts": {
-    "dev": "nodemon --watch ./src --exec \"yarn build && yarn start\"",
+    "dev": "nodemon --watch ./src/**/* -e .js,.ts,.json --exec \"yarn build && yarn start\"",
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "start": "node dist/index.js",
     "lint": "eslint ./src --fix"

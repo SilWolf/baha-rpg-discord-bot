@@ -3,7 +3,7 @@ import { Client, Intents } from 'discord.js'
 
 import commands, { registerGlobalCommands } from '@/discord/commands'
 import guildCommands, { registerGuildCommands } from '@/discord/guildCommands'
-import { getPosts } from '@/baha'
+import { getPosts } from '@/baha/post.api'
 
 const allCommands = [...commands, ...guildCommands]
 
