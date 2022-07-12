@@ -4,6 +4,10 @@ import api from '.'
 export const postLogin = async (): Promise<{ bahaToken: string }> => {
   const formData = new FormData()
 
+  console.log('userid', process.env.BAHA_USER_ID)
+  console.log('password', process.env.BAHA_PASSWORD)
+  console.log('alternativeCaptcha', process.env.BAHA_CAPTCHA)
+
   formData.append('userid', process.env.BAHA_USER_ID)
   formData.append('password', process.env.BAHA_PASSWORD)
   formData.append('alternativeCaptcha', process.env.BAHA_CAPTCHA)

@@ -18,6 +18,7 @@ const api = axios.create({
 })
 
 api.interceptors.response.use((res: AxiosResponse<BahaAPIResponse>) => {
+  console.log(res)
   if (res.data.error) {
     throw new Error(res.data.error.message ?? '未知的錯誤')
   }
