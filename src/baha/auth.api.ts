@@ -2,11 +2,22 @@ import FormData from 'form-data'
 import api from '.'
 
 export const postLogin = async (): Promise<{ bahaToken: string }> => {
-  const formData = new FormData()
-
   console.log('userid', process.env.BAHA_USER_ID)
   console.log('password', process.env.BAHA_PASSWORD)
   console.log('alternativeCaptcha', process.env.BAHA_CAPTCHA)
+
+  // do a pre-login
+  await api.post(
+    'https://api.gamer.com.tw/user/v1/login_precheck.php',
+    `userid=${process.env.BAHA_USER_ID}`,
+    {
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      },
+    }
+  )
+
+  const formData = new FormData()
 
   formData.append('userid', process.env.BAHA_USER_ID)
   formData.append('password', process.env.BAHA_PASSWORD)
