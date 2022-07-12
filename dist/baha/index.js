@@ -12,6 +12,7 @@ var api = axios_1.default.create({
 });
 api.interceptors.response.use(function (res) {
     var _a;
+    console.log(res)
     if (res.data.error) {
         throw new Error((_a = res.data.error.message) !== null && _a !== void 0 ? _a : '未知的錯誤');
     }
