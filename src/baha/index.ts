@@ -10,15 +10,10 @@ export type BahaAPIResponse<T = unknown> = {
   }
 }
 
-const bahaToken = process.env.bahaToken
-
 const api = axios.create({
   baseURL: 'https://api.gamer.com.tw',
   params: {
     gsn: 3014,
-  },
-  headers: {
-    Cookie: `BAHARUNE=${bahaToken};`,
   },
 })
 

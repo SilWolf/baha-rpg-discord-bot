@@ -4,14 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = __importDefault(require("axios"));
-var bahaToken = process.env.bahaToken;
 var api = axios_1.default.create({
     baseURL: 'https://api.gamer.com.tw',
     params: {
         gsn: 3014,
-    },
-    headers: {
-        Cookie: "BAHARUNE=".concat(bahaToken, ";"),
     },
 });
 api.interceptors.response.use(function (res) {
