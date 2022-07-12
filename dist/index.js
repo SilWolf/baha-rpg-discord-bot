@@ -79,19 +79,19 @@ var post_api_1 = require("./baha/post.api");
 var node_schedule_1 = __importDefault(require("node-schedule"));
 var allCommands = __spreadArray(__spreadArray([], commands_1.default, true), guildCommands_1.default, true);
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var token, appId, client;
+    var DISCORD_TOKEN, DISCORD_APP_ID, client;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                token = process.env.token;
-                if (!token) {
-                    throw new Error('Missing env: token');
+                DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+                if (!DISCORD_TOKEN) {
+                    throw new Error('Missing env: DISCORD_TOKEN');
                 }
-                appId = process.env.appId;
-                if (!appId) {
-                    throw new Error('Missing env: appId');
+                DISCORD_APP_ID = process.env.DISCORD_APP_ID;
+                if (!DISCORD_APP_ID) {
+                    throw new Error('Missing env: DISCORD_APP_ID');
                 }
-                return [4, (0, commands_1.registerGlobalCommands)(token, appId)];
+                return [4, (0, commands_1.registerGlobalCommands)(DISCORD_TOKEN, DISCORD_APP_ID)];
             case 1:
                 _a.sent();
                 client = new discord_js_1.Client({ intents: [discord_js_1.Intents.FLAGS.GUILDS] });
@@ -99,7 +99,7 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     console.log('Ready!');
                 });
                 client.on('guildCreate', function (guild) {
-                    (0, guildCommands_1.registerGuildCommands)(token, appId, guild.id);
+                    (0, guildCommands_1.registerGuildCommands)(DISCORD_TOKEN, DISCORD_APP_ID, guild.id);
                 });
                 client.on('interactionCreate', function (interaction) {
                     if (interaction.isCommand()) {
@@ -112,7 +112,7 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                         console.log("".concat(interaction.user.tag, " in #").concat(interaction.channel.id, " triggered an interaction."));
                     }
                 });
-                client.login(token).then(function () { return __awaiter(void 0, void 0, void 0, function () {
+                client.login(DISCORD_TOKEN).then(function () { return __awaiter(void 0, void 0, void 0, function () {
                     var checkForNewPostAndBroadcast;
                     return __generator(this, function (_a) {
                         switch (_a.label) {

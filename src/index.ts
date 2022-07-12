@@ -10,17 +10,17 @@ import schedule from 'node-schedule'
 const allCommands = [...commands, ...guildCommands]
 
 const main = async () => {
-  const token = process.env.token
-  if (!token) {
-    throw new Error('Missing env: token')
+  const DISCORD_TOKEN = process.env.DISCORD_TOKEN
+  if (!DISCORD_TOKEN) {
+    throw new Error('Missing env: DISCORD_TOKEN')
   }
 
-  const appId = process.env.appId
-  if (!appId) {
-    throw new Error('Missing env: appId')
+  const DISCORD_APP_ID = process.env.DISCORD_APP_ID
+  if (!DISCORD_APP_ID) {
+    throw new Error('Missing env: DISCORD_APP_ID')
   }
 
-  await registerGlobalCommands(token, appId)
+  await registerGlobalCommands(DISCORD_TOKEN, DISCORD_APP_ID)
 
   const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
 
@@ -29,7 +29,7 @@ const main = async () => {
   })
 
   client.on('guildCreate', (guild) => {
-    registerGuildCommands(token, appId, guild.id)
+    registerGuildCommands(DISCORD_TOKEN, DISCORD_APP_ID, guild.id)
   })
 
   client.on('interactionCreate', (interaction) => {
@@ -50,7 +50,7 @@ const main = async () => {
     }
   })
 
-  client.login(token).then(async () => {
+  client.login(DISCORD_TOKEN).then(async () => {
     const checkForNewPostAndBroadcast = async () => {
       const posts = await getNewPosts()
 
