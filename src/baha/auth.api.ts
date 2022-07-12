@@ -26,7 +26,7 @@ export const postLogin = async (): Promise<{ bahaToken: string }> => {
 
   const res = await api.post('/ajax/do_login.php', formData, {
     baseURL: 'https://user.gamer.com.tw',
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { 'content-type': 'multipart/form-data' },
   })
 
   const bahaTokenSet = res.headers['set-cookie']?.find((cookie) =>
