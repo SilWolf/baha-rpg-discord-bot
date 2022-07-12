@@ -5,8 +5,6 @@ import { postLogin } from './auth.api'
 let cachedlastPostId: string | undefined
 
 export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
-  await postLogin()
-
   const fn = () =>
     api
       .get<BahaAPIResponse<{ lastSn: string; postList: PostRaw[][] }>>(
@@ -27,7 +25,7 @@ export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
         for (let i = 0; i < rawPosts.length; i += 1) {
           const rawPost = rawPosts[i][0]
           if (rawPost) {
-            if (lastPostId === rawPost?.id) {
+            if (!lastPostId || lastPostId <= rawPost?.id) {
               break
             }
 

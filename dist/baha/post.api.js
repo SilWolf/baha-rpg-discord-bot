@@ -47,9 +47,7 @@ var getPosts = function (lastPostId) { return __awaiter(void 0, void 0, void 0, 
     var fn, posts, e_1, posts;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4, (0, auth_api_1.postLogin)()];
-            case 1:
-                _a.sent();
+            case 0:
                 fn = function () {
                     return _1.default
                         .get('/guild/v1/post_list.php')
@@ -66,7 +64,7 @@ var getPosts = function (lastPostId) { return __awaiter(void 0, void 0, void 0, 
                         for (var i = 0; i < rawPosts.length; i += 1) {
                             var rawPost = rawPosts[i][0];
                             if (rawPost) {
-                                if (lastPostId === (rawPost === null || rawPost === void 0 ? void 0 : rawPost.id)) {
+                                if (!lastPostId || lastPostId <= (rawPost === null || rawPost === void 0 ? void 0 : rawPost.id)) {
                                     break;
                                 }
                                 posts.push({
@@ -87,23 +85,23 @@ var getPosts = function (lastPostId) { return __awaiter(void 0, void 0, void 0, 
                         return posts;
                     });
                 };
-                _a.label = 2;
-            case 2:
-                _a.trys.push([2, 4, , 7]);
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 6]);
                 return [4, fn()];
-            case 3:
+            case 2:
                 posts = _a.sent();
                 return [2, posts];
-            case 4:
+            case 3:
                 e_1 = _a.sent();
                 return [4, (0, auth_api_1.postLogin)()];
-            case 5:
+            case 4:
                 _a.sent();
                 return [4, fn()];
-            case 6:
+            case 5:
                 posts = _a.sent();
                 return [2, posts];
-            case 7: return [2];
+            case 6: return [2];
         }
     });
 }); };

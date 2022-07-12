@@ -16,14 +16,20 @@ export const postLogin = async (): Promise<{ bahaToken: string }> => {
     }
   )
 
-  if (!res.headers.BAHARUNE) {
+  const bahaTokenSet = res.headers['set-cookie']?.find((cookie) =>
+    cookie.startsWith('BAHARUNE=')
+  )
+
+  if (!bahaTokenSet) {
     throw new Error('Failed to login')
   }
 
-  api.defaults.headers.common.Cookie = `BAHARUNE=${res.headers.BAHARUNE};`
+  const bahaToken = bahaTokenSet.split(/[=;]/g)[1]
+
+  api.defaults.headers.common.Cookie = `BAHARUNE=${bahaToken};`
 
   return {
-    bahaToken: res.headers.BAHARUNE,
+    bahaToken,
   }
 }
 

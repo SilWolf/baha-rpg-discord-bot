@@ -43,9 +43,10 @@ exports.postLogin = void 0;
 var form_data_1 = __importDefault(require("form-data"));
 var _1 = __importDefault(require("."));
 var postLogin = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var formData, res;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var formData, res, bahaTokenSet, bahaToken;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 formData = new form_data_1.default();
                 formData.append('userid', process.env.BAHA_USER_ID);
@@ -55,13 +56,17 @@ var postLogin = function () { return __awaiter(void 0, void 0, void 0, function 
                         headers: { 'Content-Type': 'multipart/form-data' },
                     })];
             case 1:
-                res = _a.sent();
-                if (!res.headers.BAHARUNE) {
+                res = _b.sent();
+                bahaTokenSet = (_a = res.headers['set-cookie']) === null || _a === void 0 ? void 0 : _a.find(function (cookie) {
+                    return cookie.startsWith('BAHARUNE=');
+                });
+                if (!bahaTokenSet) {
                     throw new Error('Failed to login');
                 }
-                _1.default.defaults.headers.common.Cookie = "BAHARUNE=".concat(res.headers.BAHARUNE, ";");
+                bahaToken = bahaTokenSet.split(/[=;]/g)[1];
+                _1.default.defaults.headers.common.Cookie = "BAHARUNE=".concat(bahaToken, ";");
                 return [2, {
-                        bahaToken: res.headers.BAHARUNE,
+                        bahaToken: bahaToken,
                     }];
         }
     });
