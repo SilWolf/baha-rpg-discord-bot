@@ -8,7 +8,12 @@ export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
   const fn = () =>
     api
       .get<BahaAPIResponse<{ lastSn: string; postList: PostRaw[][] }>>(
-        '/guild/v1/post_list.php'
+        '/guild/v1/post_list.php',
+        {
+          params: {
+            gsn: 3014,
+          },
+        }
       )
       .then((res) => {
         if (!res.data.data) {
