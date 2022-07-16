@@ -4,6 +4,10 @@
     "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "dev": "nodemon --watch ./src/**/* -e .js,.ts,.json --exec \"yarn build && node dist/index.js\"",
     "start": "node dist/index.js",
+    "start:pm2": "yarn build && pm2 start dist/index.js",
+    "stop:pm2": "pm2 stop all",
+    "restart:pm2": "yarn stop:pm2 && yarn start:pm2",
+    "log:pm2": "pm2 log",
     "lint": "eslint ./src --fix"
   },
   "dependencies": {
