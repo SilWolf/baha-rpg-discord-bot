@@ -48,6 +48,7 @@ export const getPosts = async (lastPostId?: string): Promise<BahaPost[]> => {
                 : rawPost.urlPreview,
               bahaUrl: `https://guild.gamer.com.tw/post_detail.php?gsn=${rawPost.to.gsn}&sn=${rawPost.id}`,
               eternalUrl: `https://www.isaka.idv.tw/History/viewMsg.html?sn=${rawPost.id}`,
+              ctimeDate: new Date(rawPost.ctime),
             })
           }
         }

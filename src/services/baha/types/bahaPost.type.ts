@@ -69,4 +69,5 @@ export type BahaPost = Pick<
   urlPreview?: BahaPostRawUrlPreview
   bahaUrl: string
   eternalUrl?: string
+  ctimeDate: Date
 }

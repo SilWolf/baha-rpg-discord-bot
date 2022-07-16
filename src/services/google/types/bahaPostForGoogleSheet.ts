@@ -6,4 +6,5 @@ export type BahaPostForGoogleSheet = Pick<
 > & {
   authorName: string
   authorId: string
+  createdAt: string
 }

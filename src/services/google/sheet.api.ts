@@ -42,6 +42,7 @@ export const appendPostsToMasterSheet = async (posts: BahaPost[]) => {
       authorId: post.publisher.id,
       bahaUrl: post.bahaUrl,
       eternalUrl: post.eternalUrl,
+      createdAt: post.ctimeDate.toISOString(),
     })
   )
 

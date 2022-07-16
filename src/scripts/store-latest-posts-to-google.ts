@@ -6,8 +6,6 @@ const main = async () => {
   // Get Posts
   const latestPosts = await getNewPosts()
   const res = await appendPostsToMasterSheet(latestPosts)
-
-  console.log(res)
 }
 
 main()
