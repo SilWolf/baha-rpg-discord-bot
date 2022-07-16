@@ -1,13 +1,13 @@
-import { Post, PostRaw } from '@/types/baha/post.type'
+import { BahaPost, BahaPostRaw } from '@/types/baha/post.type'
 import api, { BahaAPIResponse } from '.'
 import { postLogin } from './auth.api'
 
 let cachedlastPostId: string | undefined
 
-export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
+export const getPosts = async (lastPostId?: string): Promise<BahaPost[]> => {
   const fn = () =>
     api
-      .get<BahaAPIResponse<{ lastSn: string; postList: PostRaw[][] }>>(
+      .get<BahaAPIResponse<{ lastSn: string; postList: BahaPostRaw[][] }>>(
         '/guild/v1/post_list.php',
         {
           params: {
@@ -65,6 +65,6 @@ export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
   }
 }
 
-export const getNewPosts = (): Promise<Post[]> => getPosts(cachedlastPostId)
+export const getNewPosts = (): Promise<BahaPost[]> => getPosts(cachedlastPostId)
 
 export default {}
