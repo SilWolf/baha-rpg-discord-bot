@@ -30,7 +30,7 @@ export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
         for (let i = 0; i < rawPosts.length; i += 1) {
           const rawPost = rawPosts[i][0]
           if (rawPost) {
-            if (!lastPostId || lastPostId <= rawPost?.id) {
+            if (lastPostId && lastPostId <= rawPost?.id) {
               break
             }
 
@@ -58,9 +58,10 @@ export const getPosts = async (lastPostId?: string): Promise<Post[]> => {
     const posts = await fn()
     return posts
   } catch (e) {
-    await postLogin()
-    const posts = await fn()
-    return posts
+    // await postLogin()
+    console.log(e)
+    // const posts = await fn()
+    return []
   }
 }
 
