@@ -1,4 +1,4 @@
-import { BahaPost, BahaPostRaw } from '@/types/baha/post.type'
+import { BahaPost, BahaPostRaw } from './types/bahaPost.type'
 import api, { BahaAPIResponse } from '.'
 import { postLogin } from './auth.api'
 
