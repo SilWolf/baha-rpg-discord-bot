@@ -16,15 +16,17 @@ export const getPostsRawResponse = async (lastSn?: string) =>
     )
     .then((res) => res.data.data)
 
-export const getPosts = async (lastSn?: string): Promise<BahaPost[]> =>
+export const getPostsWithLastSn = async (
+  lastSn?: string
+): Promise<{ lastSn: string; posts: BahaPost[] }> =>
   getPostsRawResponse(lastSn).then((res) => {
     if (!res) {
-      return []
+      throw new Error('Error in getPostsRawResponse')
     }
 
     const rawPosts = res.postList ?? []
     if (rawPosts.length === 0) {
-      return []
+      return { lastSn: res.lastSn, posts: [] }
     }
 
     const posts = []
@@ -51,12 +53,11 @@ export const getPosts = async (lastSn?: string): Promise<BahaPost[]> =>
       }
     }
 
-    if (posts.length > 0) {
-      cachedlastPostId = posts[0].id
-    }
-
-    return posts
+    return { lastSn: res.lastSn, posts }
   })
+
+export const getPosts = async (lastSn?: string): Promise<BahaPost[]> =>
+  getPostsWithLastSn(lastSn).then((res) => res.posts)
 
 export const getNewPosts = async (): Promise<BahaPost[]> => {
   const posts = await getPosts().then((_posts) =>
