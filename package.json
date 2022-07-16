@@ -18,11 +18,14 @@
     "discord.js": "^13.8.1",
     "dotenv": "^16.0.1",
     "form-data": "^4.0.0",
+    "jose": "^4.8.3",
     "node-fetch": "^3.2.6",
-    "node-schedule": "^2.1.0"
+    "node-schedule": "^2.1.0",
+    "qs": "^6.11.0"
   },
   "devDependencies": {
     "@types/node-schedule": "^2.1.0",
+    "@types/qs": "^6.9.7",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
     "eslint": "^7.32.0 || ^8.2.0",
