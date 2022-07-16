@@ -1,11 +1,6 @@
 import axios from 'axios'
 import * as jose from 'jose'
-import qs from 'qs'
-import {
-  SpreadSheet,
-  SpreadSheetBatchGet,
-  SpreadSheetValueRange,
-} from './types'
+import { GoogleSpreadsheet } from 'google-spreadsheet'
 
 const GOOGLE_ACCESS_KEY_KEY = `_googleAccessKey_${process.env.GOOGLE_PROJECT_ID}`
 const GOOGLE_ACCESS_TOKEN_EXPIRED_AT_KEY = `_googleAccessTokenExpiredAt_${process.env.GOOGLE_PROJECT_ID}`
@@ -19,7 +14,7 @@ const getGoogleAccessToken = async (): Promise<string> => {
   }
 
   if (!cachedAccessToken) {
-    if (sessionStorage) {
+    if (typeof sessionStorage !== 'undefined') {
       const storedAccessToken = sessionStorage.getItem(
         GOOGLE_ACCESS_KEY_KEY
       ) as string
@@ -76,7 +71,7 @@ const getGoogleAccessToken = async (): Promise<string> => {
 
   cachedAccessToken = accessToken as string
   cachedAccessTokenExpiredAt = Date.now() + expiresIn * 1000
-  if (sessionStorage) {
+  if (typeof sessionStorage !== 'undefined') {
     sessionStorage.setItem(GOOGLE_ACCESS_KEY_KEY, cachedAccessToken)
     sessionStorage.setItem(
       GOOGLE_ACCESS_TOKEN_EXPIRED_AT_KEY,
@@ -86,26 +81,6 @@ const getGoogleAccessToken = async (): Promise<string> => {
 
   return accessToken
 }
-
-/**
- * Axios Instances
- */
-const sheetApi = axios.create({
-  baseURL: 'https://sheets.googleapis.com/v4',
-  timeout: 10000,
-})
-
-sheetApi.interceptors.request.use(async (req) => {
-  const accessToken = await getGoogleAccessToken()
-  if (accessToken) {
-    req.headers = {
-      ...req.headers,
-      Authorization: `Bearer ${accessToken}`,
-    }
-  }
-
-  return req
-})
 
 /**
  * Axios Instances
@@ -127,67 +102,25 @@ driveApi.interceptors.request.use(async (req) => {
   return req
 })
 
-export const getSpreadsheet = async (fileId: string) =>
-  sheetApi.get<SpreadSheet>(`/spreadsheets/${fileId}`).then((res) => res.data)
-
-export const getSpreadsheetValues = async (
-  fileId: string,
-  range: string,
-  dimension: 'COLUMNS' | 'ROWS'
-) =>
-  sheetApi
-    .get<SpreadSheetValueRange>(`/spreadsheets/${fileId}/values/${range}`, {
-      params: {
-        majorDimension: dimension,
-      },
-    })
-    .then((res) => res.data)
-
-export const getSpreadsheetBatchGet = async (
-  fileId: string,
-  payload: {
-    ranges: string[]
-    majorDimension: 'COLUMNS' | 'ROWS'
+export const getSpreadsheetDoc = async (fileId: string) => {
+  if (!process.env.GOOGLE_CLIENT_EMAIL) {
+    throw new Error('missing env: GOOGLE_CLIENT_EMAIL')
   }
-) =>
-  sheetApi
-    .get<SpreadSheetBatchGet>(`/spreadsheets/${fileId}/values:batchGet`, {
-      params: payload,
-      paramsSerializer: (params) =>
-        qs.stringify(params, { arrayFormat: 'repeat' }),
-    })
-    .then((res) => res.data)
 
-export const postSpreadsheetBatchUpdate = async (
-  fileId: string,
-  payload: {
-    requests: {
-      updateSpreadsheetProperties: {
-        properties: Record<string, string>
-        fields: string
-      }
-    }[]
+  if (!process.env.GOOGLE_PRIVATE_KEY) {
+    throw new Error('missing env: GOOGLE_PRIVATE_KEY')
   }
-) =>
-  sheetApi
-    .post<SpreadSheetBatchGet>(`/spreadsheets/${fileId}:batchUpdate`, payload)
-    .then((res) => res.data)
 
-export const postSpreadsheetValuesBatchUpdate = async (
-  fileId: string,
-  payload: {
-    data: {
-      range: string
-      majorDimension: 'COLUMNS' | 'ROWS'
-      values: Array<Array<string | number>>
-    }[]
-  }
-) =>
-  sheetApi
-    .post<SpreadSheetBatchGet>(`/spreadsheets/${fileId}/values:batchUpdate`, {
-      valueInputOption: 'USER_ENTERED',
-      ...payload,
-    })
-    .then((res) => res.data)
+  const doc = new GoogleSpreadsheet(fileId)
 
-export default { sheetApi, driveApi }
+  await doc.useServiceAccountAuth({
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  })
+
+  await doc.loadInfo()
+
+  return doc
+}
+
+export default { driveApi }

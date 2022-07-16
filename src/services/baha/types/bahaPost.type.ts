@@ -65,5 +65,8 @@ export type BahaPost = Pick<
   BahaPostRaw,
   'id' | 'publisher' | 'content' | 'ctime' | 'to'
 > & {
+  title: string
   urlPreview?: BahaPostRawUrlPreview
+  bahaUrl: string
+  eternalUrl?: string
 }

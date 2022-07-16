@@ -37,12 +37,17 @@ export const getPosts = async (lastPostId?: string): Promise<BahaPost[]> => {
             posts.push({
               id: rawPost.id,
               publisher: rawPost.publisher,
+              title: rawPost.content
+                .split('\n')
+                .filter((content) => !!content)[0],
               content: rawPost.content,
               ctime: rawPost.ctime,
               to: rawPost.to,
               urlPreview: Array.isArray(rawPost.urlPreview)
                 ? undefined
                 : rawPost.urlPreview,
+              bahaUrl: `https://guild.gamer.com.tw/post_detail.php?gsn=${rawPost.to.gsn}&sn=${rawPost.id}`,
+              eternalUrl: `https://www.isaka.idv.tw/History/viewMsg.html?sn=${rawPost.id}`,
             })
           }
         }
