@@ -72,5 +72,3 @@ export const getNewPosts = async (): Promise<BahaPost[]> => {
 
   return posts
 }
-
-export default {}

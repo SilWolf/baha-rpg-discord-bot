@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 export type BahaAPIResponse<T = unknown> = {
-  data?: T
+  data: T
   error?: {
     code: number
     message: string
