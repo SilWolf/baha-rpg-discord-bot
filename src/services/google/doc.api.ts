@@ -60,17 +60,31 @@ class GoogleDoc {
     return this._instance
   }
 
-  async getDoc() {
+  async load() {
     if (!this._doc) {
       this._doc = await this._instance.documents.get({
         documentId: this._docId,
       })
     }
+  }
 
-    return this._doc
+  async prependTexts(texts: string[]) {
+    return this._instance.documents.batchUpdate({
+      documentId: this._docId,
+      requestBody: {
+        requests: texts.reverse().map((text) => ({
+          insertText: {
+            text: `${text}\n\n`,
+            location: {
+              index: 1,
+            },
+          },
+        })),
+      },
+    })
   }
 }
 
-export const getGoogleDoc = (docId: string) => new GoogleDoc(docId).getDoc()
+export const getGoogleDoc = (docId: string) => new GoogleDoc(docId)
 
 export default {}
