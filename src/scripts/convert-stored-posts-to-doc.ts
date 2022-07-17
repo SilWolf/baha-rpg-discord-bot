@@ -3,12 +3,26 @@ import 'dotenv/config'
 import { getGoogleDoc } from '@/services/google/doc.api'
 import { getAllComments } from '@/services/baha/comment.api'
 import { GoogleDocRequest } from '@/services/google/types/bahaPostForGoogleDoc'
+import { getPost } from '@/services/baha/post.api'
+import googleDrive from '@/services/google/drive.api'
+import { BahaPost } from '@/services/baha/types/bahaPost.type'
 
-const main = async () => {
-  const doc = getGoogleDoc('16ZKYROfAG3wlL4GTH86B2qvGOU7SaQqRBlBmhj5zzVo')
+const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
+  if (!process.env.GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID) {
+    throw new Error('missing env: GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID')
+  }
 
-  // const comments = await getAllComments('27038713')
-  const comments = await getAllComments('27038713')
+  const createdDoc = await googleDrive.createDoc(`${post.id} - ${post.title}`, {
+    parentFolderId: process.env.GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID,
+  })
+  if (!createdDoc?.data?.id) {
+    throw new Error('Failed to create doc')
+  }
+
+  // const doc = getGoogleDoc('16ZKYROfAG3wlL4GTH86B2qvGOU7SaQqRBlBmhj5zzVo')
+  const doc = getGoogleDoc(createdDoc.data.id)
+
+  const comments = await getAllComments(post.id)
 
   const requests: GoogleDocRequest[] = []
 
@@ -152,6 +166,22 @@ const main = async () => {
   }
 
   await doc.batchUpdate(requests)
+}
+
+const main = async () => {
+  const post = await getPost('27038713')
+
+  try {
+    console.log(`start storePostAsPlaintextToGoogleDoc (postId=${post.id})`)
+    await storePostAsPlaintextToGoogleDoc(post)
+    console.log(`finish storePostAsPlaintextToGoogleDoc (postId=${post.id})`)
+  } catch (e: any) {
+    console.log(`When storePostAsPlaintextToGoogleDoc: ${e.message}`)
+  }
+
+  // TODO: update master sheet with new file's URL
+
+  console.log('ALL DONE!')
 }
 
 main()

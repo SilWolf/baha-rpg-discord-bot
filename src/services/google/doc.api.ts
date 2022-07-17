@@ -28,7 +28,7 @@ class GoogleDoc {
 
   _doc: docs_v1.Schema$Document | undefined
 
-  constructor(docId: string) {
+  constructor(docId?: string) {
     if (!process.env.GOOGLE_CLIENT_EMAIL) {
       throw new Error('missing env: GOOGLE_CLIENT_EMAIL')
     }
@@ -54,7 +54,7 @@ class GoogleDoc {
       auth,
     })
 
-    this._docId = docId
+    this._docId = docId ?? ''
   }
 
   getInstance() {
@@ -62,7 +62,7 @@ class GoogleDoc {
   }
 
   async load() {
-    if (!this._doc) {
+    if (!this._doc && this._docId) {
       this._doc = await this._instance.documents.get({
         documentId: this._docId,
       })
