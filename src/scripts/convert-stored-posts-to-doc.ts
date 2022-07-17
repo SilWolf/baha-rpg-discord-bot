@@ -12,9 +12,12 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
     throw new Error('missing env: GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID')
   }
 
-  const createdDoc = await googleDrive.createDoc(`${post.id} - ${post.title}`, {
-    parentFolderId: process.env.GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID,
-  })
+  const createdDoc = await googleDrive.createDoc(
+    `${post.id} - ${post.title} (${post.ctimeDate.toLocaleDateString()})`,
+    {
+      parentFolderId: process.env.GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID,
+    }
+  )
   if (!createdDoc?.data?.id) {
     throw new Error('Failed to create doc')
   }
@@ -163,6 +166,152 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
     )
 
     requests.push(...newRequests)
+  }
+
+  // Add post details (headers, date, etc.)
+  requests.push(
+    {
+      insertText: {
+        text: `\n\n\n\n`,
+        location: {
+          index: 1,
+        },
+      },
+    },
+    {
+      insertText: {
+        text: post.content,
+        location: {
+          index: 1,
+        },
+      },
+    },
+    {
+      updateTextStyle: {
+        textStyle: {
+          bold: false,
+          fontSize: {
+            magnitude: 14,
+            unit: 'PT',
+          },
+        },
+        range: {
+          startIndex: 1,
+          endIndex: 1 + post.content.length,
+        },
+        fields: 'bold,fontSize',
+      },
+    },
+    {
+      insertText: {
+        text: `${post.publisher.name}:\n`,
+        location: {
+          index: 1,
+        },
+      },
+    },
+    {
+      updateTextStyle: {
+        textStyle: {
+          bold: true,
+        },
+        range: {
+          startIndex: 1,
+          endIndex: 1 + post.publisher.name.length + 1,
+        },
+        fields: 'bold',
+      },
+    }
+  )
+
+  // Create Header and Footer and then edit it
+  const [headerId, footerId] = await doc
+    .batchUpdate([
+      {
+        createHeader: {
+          type: 'DEFAULT',
+        },
+      },
+      {
+        createFooter: {
+          type: 'DEFAULT',
+        },
+      },
+    ])
+    .then((res) => {
+      if (!res.data.replies) {
+        return [undefined, undefined]
+      }
+
+      return [
+        res.data.replies[0].createHeader?.headerId,
+        res.data.replies[1].createFooter?.footerId,
+      ]
+    })
+
+  if (headerId) {
+    const text = `${post.id} - ${
+      post.title
+    } (${post.ctimeDate.toLocaleDateString()})`
+
+    requests.push(
+      {
+        insertText: {
+          location: {
+            segmentId: headerId,
+            index: 0,
+          },
+          text,
+        },
+      },
+      {
+        updateTextStyle: {
+          textStyle: {
+            fontSize: {
+              magnitude: 9,
+              unit: 'PT',
+            },
+          },
+          range: {
+            segmentId: headerId,
+            startIndex: 0,
+            endIndex: text.length + 1,
+          },
+          fields: 'fontSize',
+        },
+      }
+    )
+  }
+
+  if (footerId) {
+    const text = post.bahaUrl
+    requests.push(
+      {
+        insertText: {
+          location: {
+            segmentId: footerId,
+            index: 0,
+          },
+          text,
+        },
+      },
+      {
+        updateTextStyle: {
+          textStyle: {
+            fontSize: {
+              magnitude: 9,
+              unit: 'PT',
+            },
+          },
+          range: {
+            segmentId: footerId,
+            startIndex: 0,
+            endIndex: text.length + 1,
+          },
+          fields: 'fontSize',
+        },
+      }
+    )
   }
 
   await doc.batchUpdate(requests)
