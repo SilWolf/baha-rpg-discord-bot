@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import 'dotenv/config'
+import express from 'express'
 import { getGoogleDoc } from '@/services/google/doc.api'
 import { getAllComments } from '@/services/baha/comment.api'
 import { GoogleDocRequest } from '@/services/google/types/bahaPostForGoogleDoc'
@@ -408,5 +409,16 @@ const main = async () => {
 
   console.log('ALL DONE!')
 }
+
+const app = express()
+const port = process.env.PORT
+
+app.get('/', (_: any, res: any) => {
+  res.send('hello world')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
 
 main()
