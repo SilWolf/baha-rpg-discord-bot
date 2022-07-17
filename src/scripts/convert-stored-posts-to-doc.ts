@@ -7,6 +7,31 @@ import { getPost } from '@/services/baha/post.api'
 import googleDrive from '@/services/google/drive.api'
 import { BahaPost } from '@/services/baha/types/bahaPost.type'
 
+const COLORS: { red: number; green: number; blue: number }[] = [
+  { red: 27 / 255, green: 45 / 255, blue: 148 / 255 },
+  { red: 148 / 255, green: 27 / 255, blue: 27 / 255 },
+  { red: 163 / 255, green: 123 / 255, blue: 28 / 255 },
+  { red: 28 / 255, green: 163 / 255, blue: 39 / 255 },
+  { red: 28 / 255, green: 163 / 255, blue: 156 / 255 },
+  { red: 147 / 255, green: 28 / 255, blue: 163 / 255 },
+  { red: 163 / 255, green: 156 / 255, blue: 28 / 255 },
+  { red: 84 / 255, green: 126 / 255, blue: 161 / 255 },
+
+  { red: 41 / 255, green: 145 / 255, blue: 110 / 255 },
+  { red: 145 / 255, green: 41 / 255, blue: 93 / 255 },
+  { red: 145 / 255, green: 72 / 255, blue: 41 / 255 },
+  { red: 41 / 255, green: 129 / 255, blue: 145 / 255 },
+
+  { red: 14 / 255, green: 28 / 255, blue: 99 / 255 },
+  { red: 99 / 255, green: 14 / 255, blue: 14 / 255 },
+  { red: 18 / 255, green: 77 / 255, blue: 22 / 255 },
+  { red: 77 / 255, green: 56 / 255, blue: 17 / 255 },
+  { red: 89 / 255, green: 19 / 255, blue: 88 / 255 },
+  { red: 19 / 255, green: 62 / 255, blue: 89 / 255 },
+  { red: 53 / 255, green: 89 / 255, blue: 19 / 255 },
+  { red: 19 / 255, green: 89 / 255, blue: 41 / 255 },
+]
+
 const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
   if (!process.env.GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID) {
     throw new Error('missing env: GOOGLE_DRIVE_POSTS_PLAINTEXT_FOLDER_ID')
@@ -26,6 +51,21 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
   const doc = getGoogleDoc(createdDoc.data.id)
 
   const comments = await getAllComments(post.id)
+  const authorIdColorMap: Record<
+    string,
+    { red: number; green: number; blue: number }
+  > = {
+    [post.publisher.id]: { red: 0, green: 0, blue: 0 },
+  }
+
+  const getColorByAuthorId = (authorId: string) => {
+    if (!authorIdColorMap[authorId]) {
+      const index = Object.keys(authorIdColorMap).length % COLORS.length
+      authorIdColorMap[authorId] = COLORS[index]
+    }
+
+    return authorIdColorMap[authorId]
+  }
 
   const requests: GoogleDocRequest[] = []
 
@@ -121,12 +161,15 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
         updateTextStyle: {
           textStyle: {
             bold: false,
+            foregroundColor: {
+              color: { rgbColor: getColorByAuthorId(comment.authorId) },
+            },
           },
           range: {
             startIndex: 1,
             endIndex: 1 + newText.length,
           },
-          fields: 'bold',
+          fields: 'bold,foregroundColor',
         },
       }
     )
@@ -155,12 +198,15 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
         updateTextStyle: {
           textStyle: {
             bold: true,
+            foregroundColor: {
+              color: { rgbColor: getColorByAuthorId(comment.authorId) },
+            },
           },
           range: {
             startIndex: 1,
             endIndex: 1 + comment.authorName.length + 1,
           },
-          fields: 'bold',
+          fields: 'bold,foregroundColor',
         },
       }
     )
@@ -191,7 +237,7 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
         textStyle: {
           bold: false,
           fontSize: {
-            magnitude: 14,
+            magnitude: 13,
             unit: 'PT',
           },
         },
