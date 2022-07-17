@@ -369,7 +369,7 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
 
 const main = async () => {
   const STEP = 50
-  let offset = 0
+  let offset = 6000
 
   while (offset < 15000) {
     const rows = await getPostsFromMasterListingSheet(STEP, offset)
