@@ -19,6 +19,7 @@ import {
   docs_v1,
   docs as googleDocs,
 } from '@googleapis/docs'
+import { GoogleDocRequest } from './types/bahaPostForGoogleDoc'
 
 class GoogleDoc {
   _instance: docs_v1.Docs
@@ -80,6 +81,15 @@ class GoogleDoc {
             },
           },
         })),
+      },
+    })
+  }
+
+  async batchUpdate(requests: GoogleDocRequest[]) {
+    return this._instance.documents.batchUpdate({
+      documentId: this._docId,
+      requestBody: {
+        requests,
       },
     })
   }
