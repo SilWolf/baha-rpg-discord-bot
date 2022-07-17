@@ -1,4 +1,4 @@
-export type PostRawPublisher = {
+export type BahaPostRawPublisher = {
   name: string
   id: string
   cover: string
@@ -7,7 +7,7 @@ export type PostRawPublisher = {
   isPriorityFollow: boolean
 }
 
-export type PostRawGuild = {
+export type BahaPostRawGuild = {
   name: string
   id: string
   gsn: number
@@ -15,14 +15,14 @@ export type PostRawGuild = {
   pic: string
 }
 
-export type PostRawUrlPreview = {
+export type BahaPostRawUrlPreview = {
   urlTitle: string
   urlImage: string
   urlLink: string
   urlDesc: string
 }
 
-export type PostRaw = {
+export type BahaPostRaw = {
   type: string
   service: number
   time: string // '07月04日 18:52 編輯'
@@ -34,14 +34,14 @@ export type PostRaw = {
   shareCount: number
   id: string
   content: string
-  publisher: PostRawPublisher
-  to: PostRawGuild
+  publisher: BahaPostRawPublisher
+  to: BahaPostRawGuild
   isOfficial: boolean
   officialType: number
   canCheckIn: boolean
   images: string[]
   imageType: string
-  urlPreview?: PostRawUrlPreview | Array<unknown>
+  urlPreview?: BahaPostRawUrlPreview | Array<unknown>
   tags: string[]
   mentions: string[]
   markFrom: string[]
@@ -61,9 +61,13 @@ export type PostRaw = {
   contentImages: string[]
 }
 
-export type Post = Pick<
-  PostRaw,
+export type BahaPost = Pick<
+  BahaPostRaw,
   'id' | 'publisher' | 'content' | 'ctime' | 'to'
 > & {
-  urlPreview?: PostRawUrlPreview
+  title: string
+  urlPreview?: BahaPostRawUrlPreview
+  bahaUrl: string
+  eternalUrl?: string
+  ctimeDate: Date
 }

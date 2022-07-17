@@ -1,9 +1,11 @@
 import 'dotenv/config'
 import { Client, Intents, MessageEmbed } from 'discord.js'
 
-import commands, { registerGlobalCommands } from '@/discord/commands'
-import guildCommands, { registerGuildCommands } from '@/discord/guildCommands'
-import { getNewPosts } from '@/baha/post.api'
+import commands, { registerGlobalCommands } from '@/services/discord/commands'
+import guildCommands, {
+  registerGuildCommands,
+} from '@/services/discord/guildCommands'
+import { getNewPosts } from '@/services/baha/post.api'
 
 import schedule from 'node-schedule'
 
