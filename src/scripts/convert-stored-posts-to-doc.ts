@@ -6,6 +6,8 @@ import { GoogleDocRequest } from '@/services/google/types/bahaPostForGoogleDoc'
 import { getPost } from '@/services/baha/post.api'
 import googleDrive from '@/services/google/drive.api'
 import { BahaPost } from '@/services/baha/types/bahaPost.type'
+import { getPostsFromMasterListingSheet } from '@/services/google/sheet.api'
+import { BahaPostForGoogleSheet } from '@/services/google/types/bahaPostForGoogleSheet'
 
 const COLORS: { red: number; green: number; blue: number }[] = [
   { red: 27 / 255, green: 45 / 255, blue: 148 / 255 },
@@ -361,20 +363,48 @@ const storePostAsPlaintextToGoogleDoc = async (post: BahaPost) => {
   }
 
   await doc.batchUpdate(requests)
+
+  return doc
 }
 
 const main = async () => {
-  const post = await getPost('27038713')
+  const STEP = 50
+  let offset = 0
 
-  try {
-    console.log(`start storePostAsPlaintextToGoogleDoc (postId=${post.id})`)
-    await storePostAsPlaintextToGoogleDoc(post)
-    console.log(`finish storePostAsPlaintextToGoogleDoc (postId=${post.id})`)
-  } catch (e: any) {
-    console.log(`When storePostAsPlaintextToGoogleDoc: ${e.message}`)
+  while (offset < 15000) {
+    const rows = await getPostsFromMasterListingSheet(STEP, offset)
+    if (rows.length === 0) {
+      break
+    }
+
+    for (let i = 0; i < rows.length; i += 1) {
+      if (!rows[i].plaintextDocUrl && rows[i].id) {
+        try {
+          const post = await getPost(rows[i].id)
+
+          console.log(
+            `start storePostAsPlaintextToGoogleDoc (postId=${post.id})`
+          )
+          const plaintextDoc = await storePostAsPlaintextToGoogleDoc(post)
+          console.log(
+            `finish storePostAsPlaintextToGoogleDoc (postId=${post.id})`
+          )
+
+          console.log(`refresh row record (postId=${post.id})`)
+
+          // TODO: update master sheet with new file's URL
+          rows[
+            i
+          ].plaintextDocUrl = `https://docs.google.com/document/d/${plaintextDoc.getDocId()}/edit?usp=sharing`
+          rows[i].save()
+        } catch (e: any) {
+          console.log(`When storePostAsPlaintextToGoogleDoc: ${e.message}`)
+        }
+      }
+    }
+
+    offset += STEP
   }
-
-  // TODO: update master sheet with new file's URL
 
   console.log('ALL DONE!')
 }

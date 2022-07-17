@@ -61,6 +61,10 @@ class GoogleDoc {
     return this._instance
   }
 
+  getDocId() {
+    return this._docId
+  }
+
   async load() {
     if (!this._doc && this._docId) {
       this._doc = await this._instance.documents.get({
