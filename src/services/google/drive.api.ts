@@ -71,6 +71,46 @@ class GoogleDrive {
       fields: 'id',
     })
   }
+
+  createSpreadsheet(
+    spreadsheetName: string,
+    options?: { parentFolderId?: string }
+  ) {
+    const requestBody: drive_v3.Schema$File = {
+      name: spreadsheetName,
+      mimeType: 'application/vnd.google-apps.spreadsheet',
+    }
+
+    if (options?.parentFolderId) {
+      requestBody.parents = [options.parentFolderId]
+    }
+
+    return this._instance.files.create({
+      requestBody,
+      fields: 'id',
+    })
+  }
+
+  moveFileFromFolderToFolder(
+    fileId: string,
+    oldFolderId: string,
+    newFolderId: string
+  ) {
+    this._instance.files.update({
+      fileId,
+      addParents: newFolderId,
+      removeParents: oldFolderId,
+    })
+  }
+
+  copyFile(fileId: string, params: drive_v3.Schema$File = {}) {
+    return this._instance.files
+      .copy({
+        fileId,
+        requestBody: params,
+      })
+      .then((res) => res.data)
+  }
 }
 
 const thisGoogleDrive = new GoogleDrive()

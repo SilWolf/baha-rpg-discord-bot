@@ -102,17 +102,7 @@ driveApi.interceptors.request.use(async (req) => {
   return req
 })
 
-export const getDoc = async () => {
-  if (!process.env.GOOGLE_CLIENT_EMAIL) {
-    throw new Error('missing env: GOOGLE_CLIENT_EMAIL')
-  }
-
-  if (!process.env.GOOGLE_PRIVATE_KEY) {
-    throw new Error('missing env: GOOGLE_PRIVATE_KEY')
-  }
-}
-
-export const getSpreadsheetDoc = async (fileId: string) => {
+export const getSheetDoc = async (fileId: string) => {
   if (!process.env.GOOGLE_CLIENT_EMAIL) {
     throw new Error('missing env: GOOGLE_CLIENT_EMAIL')
   }

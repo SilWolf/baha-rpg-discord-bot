@@ -1,5 +1,5 @@
 import { BahaPost } from '@/services/baha/types/bahaPost.type'
-import { getSpreadsheetDoc } from '.'
+import { getSheetDoc } from '.'
 import { BahaPostForGoogleSheet } from './types/bahaPostForGoogleSheet'
 
 export const getMasterSheetDoc = async () => {
@@ -7,7 +7,7 @@ export const getMasterSheetDoc = async () => {
     throw new Error('Missing env: GOOGLE_SHEET_MASTER_FILE_ID')
   }
 
-  return getSpreadsheetDoc(process.env.GOOGLE_SHEET_MASTER_FILE_ID)
+  return getSheetDoc(process.env.GOOGLE_SHEET_MASTER_FILE_ID)
 }
 
 export const getListingSheetOfMasterSheetDoc = async () => {
