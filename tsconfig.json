@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
 		"baseUrl": "./src",
-		"target": "es5",
-		"lib": ["es5"],
+		"target": "es2015",
+		"lib": ["es2015"],
 		"module": "commonjs",
 		"allowJs": false,
 		"sourceMap": false,

@@ -50,3 +50,12 @@ export const appendPostsToMasterSheet = async (posts: BahaPost[]) => {
 
   return res
 }
+
+export const getPostsFromMasterListingSheet = async (
+  limit = 100,
+  offset = 0
+) => {
+  const sheet = await getListingSheetOfMasterSheetDoc()
+
+  return sheet.getRows({ limit, offset })
+}
