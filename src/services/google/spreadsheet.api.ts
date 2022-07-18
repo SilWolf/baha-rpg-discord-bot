@@ -163,12 +163,20 @@ class GoogleSpreadsheet {
       updateCells: {
         range,
         rows,
+        fields: 'userEnteredValue',
       },
     })
   }
 
   async execute() {
+    const res = this._sdk.spreadsheets.batchUpdate({
+      spreadsheetId: this._id,
+      requestBody: {
+        requests: this._requests,
+      },
+    })
     this._requests = []
+    return res
   }
 }
 

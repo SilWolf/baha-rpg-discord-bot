@@ -23,7 +23,7 @@ const main = async () => {
     }
 
     for (let i = 0; i < rows.length; i += 1) {
-      if (rows[i].id) {
+      if (rows[i].id && !(rows[i].plaintextDocUrl && rows[i].sheetDocUrl)) {
         let isRowUpdated = false
         try {
           const post = await getPost(rows[i].id)

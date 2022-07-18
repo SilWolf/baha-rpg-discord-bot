@@ -37,14 +37,14 @@ const storePostAsSpreadsheetToGoogleDoc = async (post: BahaPost) => {
   const infoSheet = spreadsheet
     .getInstance()
     ?.sheets?.find((sheet) => sheet.properties?.title === '資料')
-  if (!infoSheet?.properties?.sheetId) {
+  if (typeof infoSheet?.properties?.sheetId === 'undefined') {
     throw new Error(`Cannot get infoSheet (postId=${post.id})`)
   }
 
   const commentsSheet = spreadsheet
     .getInstance()
     ?.sheets?.find((sheet) => sheet.properties?.title === '回覆')
-  if (!commentsSheet?.properties?.sheetId) {
+  if (typeof commentsSheet?.properties?.sheetId === 'undefined') {
     throw new Error(`Cannot get commentsSheet (postId=${post.id})`)
   }
 
@@ -110,7 +110,7 @@ const storePostAsSpreadsheetToGoogleDoc = async (post: BahaPost) => {
 
   // Store comments
   spreadsheet.addRows(
-    commentsSheet.properties?.sheetId,
+    commentsSheet.properties?.sheetId as number,
     comments.map((comment, i) => ({
       values: [
         {
