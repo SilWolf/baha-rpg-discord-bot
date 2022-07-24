@@ -12,6 +12,7 @@ export type BahaAPIResponse<T = unknown> = {
 
 const api = axios.create({
   baseURL: 'https://api.gamer.com.tw',
+  withCredentials: true,
 })
 
 api.interceptors.response.use((res: AxiosResponse<BahaAPIResponse>) => {

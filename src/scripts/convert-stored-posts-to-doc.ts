@@ -23,7 +23,11 @@ const main = async () => {
     }
 
     for (let i = 0; i < rows.length; i += 1) {
-      if (rows[i].id && !(rows[i].plaintextDocUrl && rows[i].sheetDocUrl)) {
+      if (
+        rows[i].id &&
+        !rows[i]
+          .sheetDocUrl /* !(rows[i].plaintextDocUrl && rows[i].sheetDocUrl */
+      ) {
         let isRowUpdated = false
         try {
           const post = await getPost(rows[i].id)
@@ -69,8 +73,8 @@ const main = async () => {
             }
           }
 
-          console.log(`refresh row record (postId=${post.id})`)
           if (isRowUpdated) {
+            console.log(`refresh row record (postId=${post.id})`)
             rows[i].save()
           }
         } catch (e: any) {

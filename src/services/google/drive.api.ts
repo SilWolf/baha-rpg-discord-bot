@@ -91,12 +91,12 @@ class GoogleDrive {
     })
   }
 
-  moveFileFromFolderToFolder(
+  async moveFileFromFolderToFolder(
     fileId: string,
     oldFolderId: string,
     newFolderId: string
   ) {
-    this._instance.files.update({
+    return this._instance.files.update({
       fileId,
       addParents: newFolderId,
       removeParents: oldFolderId,
